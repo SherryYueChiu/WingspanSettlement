@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>展翅翱翔計分表</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        /* 可滾動容器 */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px auto;
+            max-width: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: white;
+        }
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 0;
+            background: white;
+            width: max-content;
+            min-width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50; /* 展翅翱翔綠 */
+            color: white;
+            font-weight: bold;
+        }
+        /* 第一欄（項目名稱）固定且靠左對齊 */
+        th:first-child,
+        td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            text-align: left;
+            font-weight: bold;
+            background-color: #f4f4f4;
+            width: 5em;
+            min-width: 5em;
+            max-width: 5em;
+            box-sizing: border-box;
+        }
+        /* 表頭第一列也需要固定背景色 */
+        th:first-child {
+            background-color: #4CAF50;
+            color: white;
+            z-index: 11;
+        }
+        /* 總計行第一列的背景色 */
+        tr.total-row td:first-child {
+            background-color: #e0e0e0;
+        }
+        /* 數據列（除了第一列）固定寬度為3em */
+        td:not(:first-child),
+        th:not(:first-child) {
+            width: 3em;
+            min-width: 3em;
+            max-width: 3em;
+        }
+        /* 可編輯區域的樣式提示 */
+        td[contenteditable="true"] {
+            background-color: #fff;
+            cursor: text;
+        }
+        td[contenteditable="true"]:focus {
+            background-color: #e8f5e9; /* 輸入時變淺綠色 */
+            outline: 2px solid #4CAF50;
+        }
+        /* 總計行樣式 */
+        tr.total-row {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="table-container">
+    <table id="scoreTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>玩家 1</th>
+                <th>玩家 2</th>
+                <th>玩家 3</th>
+                <th>玩家 4</th>
+                <th>玩家 5</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>鳥類卡</td>
+                <td contenteditable="true" data-col="1">0</td>
+                <td contenteditable="true" data-col="2">0</td>
+                <td contenteditable="true" data-col="3">0</td>
+                <td contenteditable="true" data-col="4">0</td>
+                <td contenteditable="true" data-col="5">0</td>
+            </tr>
+            <tr>
+                <td>獎勵卡</td>
+                <td contenteditable="true" data-col="1">0</td>
+                <td contenteditable="true" data-col="2">0</td>
+                <td contenteditable="true" data-col="3">0</td>
+                <td contenteditable="true" data-col="4">0</td>
+                <td contenteditable="true" data-col="5">0</td>
+            </tr>
+            <tr>
+                <td>鳥蛋</td>
+                <td contenteditable="true" data-col="1">0</td>
+                <td contenteditable="true" data-col="2">0</td>
+                <td contenteditable="true" data-col="3">0</td>
+                <td contenteditable="true" data-col="4">0</td>
+                <td contenteditable="true" data-col="5">0</td>
+            </tr>
+            <tr>
+                <td>儲存的食物</td>
+                <td contenteditable="true" data-col="1">0</td>
+                <td contenteditable="true" data-col="2">0</td>
+                <td contenteditable="true" data-col="3">0</td>
+                <td contenteditable="true" data-col="4">0</td>
+                <td contenteditable="true" data-col="5">0</td>
+            </tr>
+            <tr>
+                <td>塞入的卡牌</td>
+                <td contenteditable="true" data-col="1">0</td>
+                <td contenteditable="true" data-col="2">0</td>
+                <td contenteditable="true" data-col="3">0</td>
+                <td contenteditable="true" data-col="4">0</td>
+                <td contenteditable="true" data-col="5">0</td>
+            </tr>
+            
+            <tr class="total-row">
+                <td>總計</td>
+                <td id="total-1">0</td>
+                <td id="total-2">0</td>
+                <td id="total-3">0</td>
+                <td id="total-4">0</td>
+                <td id="total-5">0</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 1. 綁定監聽器到整個 Table (Event Delegation)，效能比較好
+    const table = document.getElementById('scoreTable');
+
+    table.addEventListener('input', function(e) {
+        const target = e.target;
+        
+        // 確保觸發事件的是我們要的那些可編輯格子
+        if (target.hasAttribute('contenteditable') && target.dataset.col) {
+            const colIndex = target.dataset.col; // 抓出是哪一欄 (例如 "1")
+            calculateColumnSum(colIndex);        // 只重新計算那一欄
+        }
+    });
+
+    // 2. 計算特定欄位總分的函式
+    function calculateColumnSum(colIndex) {
+        // 選取所有該欄位 data-col="X" 的可編輯格子
+        const cells = document.querySelectorAll(`td[data-col="${colIndex}"]`);
+        let sum = 0;
+
+        cells.forEach(cell => {
+            // 防呆機制：去除空格，如果是空字串或非數字，當作 0
+            const text = cell.innerText.trim();
+            const val = parseInt(text, 10); // 展翅翱翔分數通常是整數，用 parseInt
+            
+            if (!isNaN(val)) {
+                sum += val;
+            }
+        });
+
+        // 更新該欄位的總計格
+        const totalCell = document.getElementById(`total-${colIndex}`);
+        totalCell.innerText = sum;
+    }
+</script>
+
+</body>
+</html>

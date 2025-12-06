@@ -16,13 +16,16 @@
             margin: 20px auto;
             max-width: 100%;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            background: white;
+            background: transparent;
         }
         table {
             border-collapse: separate;
             border-spacing: 0;
             margin: 0;
-            background: white;
+            background-image: url('table-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             width: max-content;
             min-width: 100%;
         }
@@ -32,7 +35,7 @@
             text-align: center;
         }
         th {
-            background-color: #4CAF50; /* 展翅翱翔綠 */
+            background-color: rgba(135, 206, 235, 0.8); /* 天空藍 */
             color: white;
             font-weight: bold;
         }
@@ -44,7 +47,7 @@
             z-index: 10;
             text-align: left;
             font-weight: bold;
-            background-color: #f4f4f4;
+            background-color: rgba(244, 244, 244, 0.9);
             width: 5em;
             min-width: 5em;
             max-width: 5em;
@@ -52,13 +55,13 @@
         }
         /* 表頭第一列也需要固定背景色 */
         th:first-child {
-            background-color: #4CAF50;
+            background-color: rgba(135, 206, 235, 0.9);
             color: white;
             z-index: 11;
         }
         /* 總計行第一列的背景色 */
         tr.total-row td:first-child {
-            background-color: #e0e0e0;
+            background-color: rgba(224, 224, 224, 0.9);
         }
         /* 數據列（除了第一列）固定寬度為3em */
         td:not(:first-child),
@@ -69,16 +72,16 @@
         }
         /* 可編輯區域的樣式提示 */
         td[contenteditable="true"] {
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.7);
             cursor: text;
         }
         td[contenteditable="true"]:focus {
-            background-color: #e8f5e9; /* 輸入時變淺綠色 */
-            outline: 2px solid #4CAF50;
+            background-color: rgba(176, 224, 230, 0.9); /* 輸入時變淺藍色 */
+            outline: 2px solid #87CEEB;
         }
         /* 總計行樣式 */
         tr.total-row {
-            background-color: #e0e0e0;
+            background-color: rgba(224, 224, 224, 0.8);
             font-weight: bold;
             font-size: 1.1em;
             color: #333;
